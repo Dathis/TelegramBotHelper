@@ -22,10 +22,11 @@ youtube = build('youtube', 'v3', developerKey=youtube_token)
 
 
 # Start menu
-@dp.message_handler(commands=['start'], state=None)
+@dp.message_handler(commands=['start'], state=None and States.all_states)
 async def send_welcome(message: types.Message):
     await message.answer("Welcome, " + message.from_user.first_name + '\nChoose the option', reply_markup=kb.menu_kb)
     await States.menu.set()
+    print(message.from_user.first_name)
 
 
 # WEATHER
@@ -42,10 +43,10 @@ async def get_weather(callback_query: types.CallbackQuery):
             observation = mgr.weather_at_place(message.text)
             w = observation.weather
             await message.answer((message.text).upper() + f'\n🌡Avarage temp:{w.temperature("celsius")["temp"]},'
-                                                          f'\n☁{w.detailed_status}', reply_markup=kb.back1_kb)
+                                                          f'\n☁{w.detailed_status}', reply_markup=kb.back_kb)
 
         except:
-            await message.answer('Sorry, I`m didn`t find this city😢', reply_markup=kb.back1_kb)
+            await message.answer('Sorry, I`m didn`t find this city😢', reply_markup=kb.back_kb)
 
 
 # Music
@@ -64,8 +65,9 @@ async def get_music(callback_query: types.CallbackQuery):
         for item in res['items']:
             await message.answer(
                 'Title:' + item['snippet']['title'] + '\nLink:' + 'https://www.youtube.com/watch?v=' + item['id'][
-                    'videoId'])
-        await message.answer('Back to menu', reply_markup=kb.back1_kb)
+                    'videoId'], reply_markup=kb.back_kb)
+
+        await bot.delete_message(chat_id=callback_query.message.chat.id, message_id=callback_query.message.message_id)
 
 
 # News
@@ -91,7 +93,7 @@ async def send_news(callback_query: types.CallbackQuery):
         url = a.get('href')
         urls.append(str(url))
     send_url = random.choice(urls)
-    await bot.send_message(callback_query.from_user.id, f'https://www.nytimes.com/{send_url}', reply_markup=kb.back1_kb)
+    await bot.send_message(callback_query.from_user.id, f'https://www.nytimes.com/{send_url}', reply_markup=kb.back_kb)
     await bot.delete_message(chat_id=callback_query.message.chat.id, message_id=callback_query.message.message_id)
 
 
@@ -108,7 +110,7 @@ async def send_news(callback_query: types.CallbackQuery):
         url = a.get('href')
         urls.append(str(url))
     send_url = random.choice(urls)
-    await bot.send_message(callback_query.from_user.id, f'https://www.nytimes.com/{send_url}', reply_markup=kb.back1_kb)
+    await bot.send_message(callback_query.from_user.id, f'https://www.nytimes.com/{send_url}', reply_markup=kb.back_kb)
     await bot.delete_message(chat_id=callback_query.message.chat.id, message_id=callback_query.message.message_id)
 
 
@@ -125,16 +127,17 @@ async def send_news(callback_query: types.CallbackQuery):
         url = a.get('href')
         urls.append(str(url))
     send_url = random.choice(urls)
-    await bot.send_message(callback_query.from_user.id, f'https://www.nytimes.com/{send_url}', reply_markup=kb.back1_kb)
+    await bot.send_message(callback_query.from_user.id, f'https://www.nytimes.com/{send_url}', reply_markup=kb.back_kb)
     await bot.delete_message(chat_id=callback_query.message.chat.id, message_id=callback_query.message.message_id)
 
 
-#Books
+# Books
 @dp.callback_query_handler(lambda c: c.data == 'books', state=States.menu)
 async def send_news(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, 'Choose an option', reply_markup=kb.books_kb)
     await States.books.set()
+
 
 @dp.callback_query_handler(lambda c: c.data == 'art_l', state=States.books)
 async def send_news(callback_query: types.CallbackQuery):
@@ -149,8 +152,10 @@ async def send_news(callback_query: types.CallbackQuery):
         urls.append(str(url))
     book_list = random.sample(urls, 3)
     for m in book_list:
-        await bot.send_message(callback_query.from_user.id, f'https://www.goodreads.com/{m}', reply_markup=kb.back1_kb)
+        await bot.send_message(callback_query.from_user.id, f'https://www.goodreads.com/{m}', reply_markup=kb.back_kb)
     await bot.delete_message(chat_id=callback_query.message.chat.id, message_id=callback_query.message.message_id)
+
+
 @dp.callback_query_handler(lambda c: c.data == 'science_l', state=States.books)
 async def send_news(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
@@ -164,26 +169,47 @@ async def send_news(callback_query: types.CallbackQuery):
         urls.append(str(url))
     book_list = random.sample(urls, 3)
     for m in book_list:
-        await bot.send_message(callback_query.from_user.id, f'https://www.goodreads.com/{m}', reply_markup=kb.back1_kb)
+        await bot.send_message(callback_query.from_user.id, f'https://www.goodreads.com/{m}', reply_markup=kb.back_kb)
     await bot.delete_message(chat_id=callback_query.message.chat.id, message_id=callback_query.message.message_id)
+
+
 @dp.callback_query_handler(lambda c: c.data == 'self_l', state=States.books)
 async def send_news(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     r = requests.get('https://www.goodreads.com/shelf/show/psychology-self-development')
     html = bs(r.text, 'lxml')
     div = html.find_all('div', class_='left')
-    urls=[]
+    urls = []
     for i in div:
         a = i.find('a')
         url = a.get('href')
         urls.append(str(url))
-    book_list = random.sample(urls,3)
+    book_list = random.sample(urls, 3)
     for m in book_list:
-        await bot.send_message(callback_query.from_user.id,f'https://www.goodreads.com/{m}', reply_markup=kb.back1_kb)
+        await bot.send_message(callback_query.from_user.id, f'https://www.goodreads.com/{m}', reply_markup=kb.back_kb)
     await bot.delete_message(chat_id=callback_query.message.chat.id, message_id=callback_query.message.message_id)
+
+
+# crypto
+@dp.callback_query_handler(lambda c: c.data == 'crypto', state=States.menu)
+async def crypto_send(callback_query: types.CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    r = requests.get('https://coinmarketcap.com/')
+    html = bs(r.text, 'lxml')
+    div = html.find_all('div', class_='sc-131di3y-0 cLgOOr')
+    prices = []
+    for i in div:
+        price = i.find('span')
+        prices.append(str(price))
+    await bot.send_message(callback_query.from_user.id, f'Bitcoin:{prices[3].lstrip("<span>").rstrip("</span>")}'
+                                                        f'\nEtherum:{prices[4].lstrip("<span>").rstrip("</span>")}'
+                                                        f'\nTether:{prices[5].lstrip("<span>").rstrip("</span>")}',
+                           reply_markup=kb.back_kb)
+
+
 # BackToMenu
-@dp.callback_query_handler(lambda c: c.data == 'back1', state=States.all_states)
-async def menu(callback_query: types.CallbackQuery):
+@dp.callback_query_handler(lambda c: c.data == 'back', state=States.all_states)
+async def back(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, "Welcome, " + callback_query.from_user.first_name +
                            '\nChoose the option', reply_markup=kb.menu_kb)

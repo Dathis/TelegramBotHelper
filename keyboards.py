@@ -4,9 +4,9 @@ weather_btn = InlineKeyboardButton('Weather ☁', callback_data='weather')
 music_btn = InlineKeyboardButton('Music🎵',callback_data='music')
 news_btn = InlineKeyboardButton('News NYT📰',callback_data='news')
 books_btn = InlineKeyboardButton('Books📖',callback_data='books')
-memes_btn = InlineKeyboardButton('Memes😄',callback_data='memes')
+crypto_btn = InlineKeyboardButton('Crypto prices₿', callback_data='crypto')
 
-menu_kb = InlineKeyboardMarkup().add(weather_btn, music_btn, news_btn, books_btn, memes_btn)
+menu_kb = InlineKeyboardMarkup().add(weather_btn, music_btn, news_btn, books_btn, crypto_btn)
 
 political_btn = InlineKeyboardButton('Political news',callback_data='politic')
 economy_btn = InlineKeyboardButton('Economic news',callback_data='economy')
@@ -19,7 +19,7 @@ science_l_btn = InlineKeyboardButton('Scientific and popular science literature'
 self_development_btn = InlineKeyboardButton('Literature in Psychology and Self-Development', callback_data='self_l')
 books_kb = InlineKeyboardMarkup(row_width=1).add(art_btn,science_l_btn,self_development_btn)
 
-back1_btn = InlineKeyboardButton('<<Back',callback_data='back1')
+back_btn = InlineKeyboardButton('<<Back', callback_data='back')
 
-back1_kb = InlineKeyboardMarkup().add(back1_btn)
+back_kb = InlineKeyboardMarkup().add(back_btn)
 
