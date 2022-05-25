@@ -129,6 +129,58 @@ async def send_news(callback_query: types.CallbackQuery):
     await bot.delete_message(chat_id=callback_query.message.chat.id, message_id=callback_query.message.message_id)
 
 
+#Books
+@dp.callback_query_handler(lambda c: c.data == 'books', state=States.menu)
+async def send_news(callback_query: types.CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, 'Choose an option', reply_markup=kb.books_kb)
+    await States.books.set()
+
+@dp.callback_query_handler(lambda c: c.data == 'art_l', state=States.books)
+async def send_news(callback_query: types.CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    r = requests.get('https://www.goodreads.com/genres/most_read/art')
+    html = bs(r.text, 'lxml')
+    div = html.find_all('div', class_='coverWrapper')
+    urls = []
+    for i in div:
+        a = i.find('a')
+        url = a.get('href')
+        urls.append(str(url))
+    book_list = random.sample(urls, 3)
+    for m in book_list:
+        await bot.send_message(callback_query.from_user.id, f'https://www.goodreads.com/{m}', reply_markup=kb.back1_kb)
+    await bot.delete_message(chat_id=callback_query.message.chat.id, message_id=callback_query.message.message_id)
+@dp.callback_query_handler(lambda c: c.data == 'science_l', state=States.books)
+async def send_news(callback_query: types.CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    r = requests.get('https://www.goodreads.com/genres/most_read/science')
+    html = bs(r.text, 'lxml')
+    div = html.find_all('div', class_='coverWrapper')
+    urls = []
+    for i in div:
+        a = i.find('a')
+        url = a.get('href')
+        urls.append(str(url))
+    book_list = random.sample(urls, 3)
+    for m in book_list:
+        await bot.send_message(callback_query.from_user.id, f'https://www.goodreads.com/{m}', reply_markup=kb.back1_kb)
+    await bot.delete_message(chat_id=callback_query.message.chat.id, message_id=callback_query.message.message_id)
+@dp.callback_query_handler(lambda c: c.data == 'self_l', state=States.books)
+async def send_news(callback_query: types.CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    r = requests.get('https://www.goodreads.com/shelf/show/psychology-self-development')
+    html = bs(r.text, 'lxml')
+    div = html.find_all('div', class_='left')
+    urls=[]
+    for i in div:
+        a = i.find('a')
+        url = a.get('href')
+        urls.append(str(url))
+    book_list = random.sample(urls,3)
+    for m in book_list:
+        await bot.send_message(callback_query.from_user.id,f'https://www.goodreads.com/{m}', reply_markup=kb.back1_kb)
+    await bot.delete_message(chat_id=callback_query.message.chat.id, message_id=callback_query.message.message_id)
 # BackToMenu
 @dp.callback_query_handler(lambda c: c.data == 'back1', state=States.all_states)
 async def menu(callback_query: types.CallbackQuery):

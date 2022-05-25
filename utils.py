@@ -5,3 +5,4 @@ class States(StatesGroup):
     weather = State()
     music = State()
     news = State()
+    books = State()

@@ -14,6 +14,10 @@ science_btn = InlineKeyboardButton('Scientific news',callback_data='science')
 
 news_kb = InlineKeyboardMarkup().add(political_btn,economy_btn,science_btn)
 
+art_btn = InlineKeyboardButton('Art literature', callback_data='art_l')
+science_l_btn = InlineKeyboardButton('Scientific and popular science literature', callback_data='science_l')
+self_development_btn = InlineKeyboardButton('Literature in Psychology and Self-Development', callback_data='self_l')
+books_kb = InlineKeyboardMarkup(row_width=1).add(art_btn,science_l_btn,self_development_btn)
 
 back1_btn = InlineKeyboardButton('<<Back',callback_data='back1')
 
